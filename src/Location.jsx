@@ -102,9 +102,12 @@ export default class Location extends React.Component {
       this.props.onLocationSet && this.props.onLocationSet({
         description: value,
         coords: {
-          lat: location.lat(),
-          lng: location.lng()
-        }
+          lat: location.geometry.location.lat(),
+          lng: location.geometry.location.lng()
+        },
+        postalcode:(location.address_components.find((value)=>{
+          return value.types.indexOf('postal_code')>=0;
+        })||{long_name:null}).long_name
       });
     };
 
@@ -143,7 +146,7 @@ export default class Location extends React.Component {
     return new Promise((resolve, reject) => {
       geocoder.geocode({ placeId: placeId }, (results, status) => {
         if (status === 'OK' && results && results.length > 0) {
-          resolve(results[0].geometry.location);
+          resolve(results[0]);
         } else {
           reject(false);
         }
