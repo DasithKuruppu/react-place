@@ -57,7 +57,7 @@ var Location = function (_React$Component) {
   function Location() {
     _classCallCheck(this, Location);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Location).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Location.__proto__ || Object.getPrototypeOf(Location)).apply(this, arguments));
   }
 
   _createClass(Location, [{
@@ -149,9 +149,12 @@ var Location = function (_React$Component) {
         _this3.props.onLocationSet && _this3.props.onLocationSet({
           description: value,
           coords: {
-            lat: location.lat(),
-            lng: location.lng()
-          }
+            lat: location.geometry.location.lat(),
+            lng: location.geometry.location.lng()
+          },
+          postalcode: (location.address_components.find(function (value) {
+            return value.types.indexOf('postal_code') >= 0;
+          }) || { long_name: null }).long_name
         });
       };
 
@@ -195,7 +198,7 @@ var Location = function (_React$Component) {
       return new _promisePolyfill2.default(function (resolve, reject) {
         geocoder.geocode({ placeId: placeId }, function (results, status) {
           if (status === 'OK' && results && results.length > 0) {
-            resolve(results[0].geometry.location);
+            resolve(results[0]);
           } else {
             reject(false);
           }
